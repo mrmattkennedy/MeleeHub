@@ -55,8 +55,8 @@ class GCS_Worker:
         self.num_email_downloads = 0
         self.small_downloads_max = 5
         self.email_downloads_max = 10
-        self.small_downloads_wait_time = 60*5
-        self.email_downloads_wait_time = 60*5
+        self.small_downloads_wait_time = 60*10
+        self.email_downloads_wait_time = 60*10
 
         #Firebase auth/worker
         self.new_user = True
@@ -124,8 +124,8 @@ class GCS_Worker:
     # made this, and doesn't fully understand
     # XHR requests and form data, there are
     # webkitformboundary tags on all uploads.
-    # So manually remove those and store the
-    # file locally
+    # So manually remove those bytes and 
+    # store the file locally
     ########################################
     def store_replays_locally(self):
         #For each file, download and process
@@ -564,26 +564,6 @@ Thanks again!"
             sys.stdout.flush()
 
             time.sleep(0.5)
-
-    def test(self):
-        li = ["kennemat@mail.gvsu.edu"]
-  
-        for dest in li:
-            s = smtplib.SMTP('smtp.gmail.com', 587)
-            s.starttls()
-            s.login("meleehubinfo@gmail.com", self.conf_reader())
-
-            msg = MIMEText('''Hi here is a URL www.youtube.com\n\n
-Enjoy!''')
-
-            msg['Subject'] = 'MeleeHub Download Ready'
-            msg['From'] = 'meleehubinfo@gmail.com'
-            msg['To'] = dest
-
-
-            # print(s.sendmail("meleehubinfo@gmail.com", dest, msg))
-            print(s.sendmail('meleehubinfo@gmail.com', dest, msg.as_string()))
-            s.quit()
 
 if __name__ == '__main__':
     gcs = GCS_Worker(None)

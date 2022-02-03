@@ -96,7 +96,7 @@ def check_daily_limits(numFiles):
     t0_limit = 10
     t1_limit = 50
     t2_limit = 1000
-    t3_limit = 1000
+    t3_limit = -1
 
     #Change to $5 tier can do it a large amount, then t2+t3 can do more
 

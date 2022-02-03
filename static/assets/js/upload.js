@@ -138,7 +138,7 @@ document.getElementById('theFile').onchange = function() {
         totalSizeArr
     }
 
-    // If over 3 GB of data, not allowed
+    // If over 2 GB of data, not allowed
     maxSize = 2 * 1024 * 1024 * 1024
     if (totalSize > maxSize) {
         errorLabel.innerHTML = "Max of 2gb of data can be uploaded at once"
