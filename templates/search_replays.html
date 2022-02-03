@@ -1,0 +1,1534 @@
+
+<head>
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+  <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+  <link rel="stylesheet" href="{{url_for('static', filename='assets/css/searchReplays.css')}}" />
+</head>
+
+<body onload="initializeDropdowns()" style="background-color: #40464d; width: 100%;">
+
+  <header id="header">
+    <a href="/" class="title">MeleeHub</a>
+    <nav class="top-bar fixed">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/replays" class="active">Search Replays</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Modal -->
+  <div class="modal hide fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Download progress</h5>
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+        </div>
+        <div id="downloadProgress" class="modal-body">
+          <!-- <div name="downloadProgress" id="downloadProgress"></div> -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="modalCloseOptionsBtn" class="btn btn-secondary" data-dismiss="modal" disabled>Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Button trigger modal -->
+  <input id="downloadModalBtn" type="hidden" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#exampleModal"></input>
+
+  
+  <!-- Modal for download-->
+  <div class="modal fade" id="downloadOptionsModal" tabindex="-1" role="dialog" aria-labelledby="downloadOptionsModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Download options</h5>
+          <!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button> -->
+        </div>
+        <div id="downloadOptionsTxt" class="modal-body">
+          It looks like you're trying to download a large number of files. Would you like to stay on this page and wait for the download, or have an email sent to you when the download is ready? (Note - please check spam folder if you select the email option)
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="modalCloseBtn" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+          <button type="button" id="modalWaitBtn" class="btn btn-secondary" data-dismiss="modal">Wait</button>
+          <button type="button" id="modalEmailBtn" class="btn btn-secondary" data-dismiss="modal">Email</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Button trigger modal -->
+  <input id="downloadOptionsBtn" type="hidden" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-target="#downloadOptionsModal"></input>
+
+
+<!-- Modal for help -->
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Additional information</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span>
+        This page is for searching through replays. Without any filters, a maximum of 2,000 replays will be displayed. If filters are applied, the limit is increased to 10,000.
+        To the right of this help button are 4 other buttons.
+        </br>
+        </br>
+        <b>Filters</b></br>
+        Filters has a dropdown of ways to filter replays - you can enter a substring for a player name/code, pick all 4 characters, specify the stage, as well as the tournament/subtournament. 
+        Just click on the filter and select the options you want.
+        </br>
+        </br>
+        <b>Download options</b></br>
+        Here is where you can download replays. 
+        You can select checkboxes on the left of the replay and use Download Selected just for those replays, or you can download all items in the filter you are currently looking at. 
+        Additionally, you can download entire tournaments or sub-tournaments if those items have been specified in the filter. 
+        You can reset the form, or select/unselect all items currently visible.
+        Lastly, the bottom 2 buttons are toggles for download either .slp files, the videos associated, or both.
+        </br>
+        </br>
+        <b>Filter Replays</b></br>
+        After you select your filters from the <b>Filters</b> dropdown, press this button to apply the selected filters.
+        </br>
+        </br>
+        <b>Replay videos</b></br>
+        For most replays, there is a video of that replay you can watch. However, for some, that video may not be quite ready. 
+        Processing replays takes a long time for each file, so please be patient and try again later if the video isn't available for the file you want to look at.
+        </br>
+        </br>
+        <b>Highlight Clips</b></br>
+        There is a switch button to view highligh clips - these are clips that are generated from MeleeHub. You can filter and view the associated replay file, as well as the start/end time for each highlight.
+        </span>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+  <!-- Button trigger modal -->
+  <input id="helpModalBtn" type="hidden" class="btn btn-primary" data-toggle="modal" data-target="#helpModal"></input>
+
+
+
+  <!-- Modal for help -->
+<div class="modal hide fade bd-example-modal-lg" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content" style="background-color: rgba(251, 250, 245, 0.80);">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="stopPlayingVideo()">
+          <span id="videoCloseBtn" aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="videoBody" style="text-align: center;"></div>
+      <div class="modal-footer">
+        
+        {% if discordID != 0 %}
+          <input style="float: left;" type="number" class="number" min="0" max="8" id="startMin" oninput="validateTime(src)">:
+          <input style="float: left;" type="number" class="number" min="0" max="60" id="startSecond" oninput="validateTime(src)"> to 
+          <input style="float: left;" type="number" class="number" min="0" max="8" id="endMin" oninput="validateTime(src)">:
+          <input style="float: left;" type="number" class="number" min="0" max="60" id="endSecond" oninput="validateTime(src)">
+          
+          
+          <div class="container">
+            <div class="row">
+              <div class="dropdown">
+                <a style="font-size: medium;" id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary" data-target="#" href="/page.html">Settings<span class="caret"></span></a>
+                <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+                  <button type="button" class="btn btn-success" id="60fps" onclick="changeFPS(this)">60 FPS</button>
+                  <button type="button" class="btn btn-secondary" id="120fps" onclick="changeFPS(this)">120 FPS</button>
+                  <div class="dropdown-divider"></div>
+
+                  <button type="button" class="btn btn-success" id="normalResolution" onclick="changeResolution(this)">Normal</button>
+                  <button type="button" class="btn btn-secondary" id="highResolution" onclick="changeResolution(this)">High</button>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn-success" onclick="createClip()" id="clipBtn">Clip</button>
+          <div style="width: 100%" id="clipError" style="color: red;"></div>
+        {% else %}
+          <div style="float: left; width: 100%;">To create highlights, please log in and link your Discord account if not already done</div>
+        {% endif %}
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="stopPlayingVideo()">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Button trigger modal -->
+  <input id="videoModalBtn" type="hidden" class="btn btn-primary" data-toggle="modal" data-backdrop="static" data-keyboard="false" data-target="#videoModal"></input>
+  <input id="fpsSetting" type="hidden" value="60">
+  <input id="resolutionSetting" type="hidden" value="Normal">
+  <input id="currentMaxFrames" type="hidden" value="0">
+  <input id="currentSLPFile" type="hidden" value="">
+  <input id="currentUID" type="hidden" value="">
+  <input id="discordID" type="hidden" value="{{discordID}}">
+  <input id="discordUsername" type="hidden" value="{{discordUsername}}">
+
+
+
+
+  <meta id="tourneyData" data="{{tourneys}}">
+  <meta id="priorTourneyData" data="{{prior_tourney}}">
+  <!-- <form id="filterSearch" action="/searchReplays" method="post"> -->
+  <form id="filterSearch" action="/replays" method="get">
+
+    <input name="char1" id="char1" type="hidden" value="{{ character_filters[0] }}">
+    <input name="char2" id="char2" type="hidden" value="{{ character_filters[1] }}">
+    <input name="char3" id="char3" type="hidden" value="{{ character_filters[2] }}">
+    <input name="char4" id="char4" type="hidden" value="{{ character_filters[3] }}">
+    
+    <input name="stageInput" id="stageInput" type="hidden" value="{{ stage_filter }}">
+
+    <input name="tourneyInput" id="tourneyInput" type="hidden" value="{{ prior_tourney }}">
+    <input name="subTourneyInput" id="subTourneyInput" type="hidden" value="{{ prior_subTourney }}">
+
+    <input name="downloadSLPFiles" id="downloadSLPFiles" type="hidden" value="{{ download_slp_files }}">
+    <input name="downloadVideoFiles" id="downloadVideoFiles" type="hidden" value="{{ download_video_files }}">
+  <br/>
+
+    <!-- Filter dropdown -->
+  <div class="row" style="margin: auto;">
+
+    <!-- Filter button -->
+    <div class="col-3 col-12-medium">
+      <div class="container" style="width: 100%; height: 100%; font-size: large; text-align: center;">
+        <div class="row" style="width: 100%; height: 100%;">
+          <div class="dropdown">
+          <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-info" onclick="document.getElementById('helpModalBtn').click()" data-target="#" href="/page.html">Help<span class="caret"></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- <div class="col-2 col-10-medium"></div> -->
+
+    <div class="col-3 col-12-medium" >
+      <div class="container">
+        <div class="row">
+
+
+          <div class="dropdown">
+            <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-primary" data-target="#" href="/page.html" style="text-align: center;">Filters</a>
+            <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+              
+
+              <!-- Player Filters -->
+              <li class="dropdown-submenu">
+                <a>Player filters</a>
+                <ul class="dropdown-menu">
+                  <li><input type="text" name="playerOneFilter" id="playerOneFilter" style="background-color: #40464d; color: white;" placeholder="Enter player name / code" value="{{ player_filters[0] }}"/><br/></li>
+                  <li><input type="text" name="playerTwoFilter" id="playerTwoFilter" style="background-color: #40464d; color: white;" placeholder="Enter player name / code" value="{{ player_filters[1] }}"/><br/></li>
+                  <li><input type="text" name="playerThreeFilter" id="playerThreeFilter" style="background-color: #40464d; color: white;" placeholder="Enter player name /  code" value="{{ player_filters[2] }}"/><br/></li>
+                  <li><input type="text" name="playerFourFilter" id="playerFourFilter"style="background-color: #40464d; color: white;" placeholder="Enter player name / code" value="{{ player_filters[3] }}"/></li>
+                </ul>
+              </li>
+              <div class="dropdown-divider"></div>
+  
+              <!-- Character Filters -->
+              <li class="dropdown-submenu">
+                <a> Character filters</a>
+                <ul class="dropdown-menu">
+  
+                  <li class="dropdown-submenu">
+                    <a id="charOneFilterTxt">Character 1: {{ character_filters[0] }}</a>
+                    <ul id="dropdown1UL" class="dropdown-menu">
+                      {% for char_num in range(0,num_chars) %}
+                        <li onclick="changeCharDropdown(this, 'charOneFilterTxt')" style="color: white;"><a>{{ char_data[char_num] }}</a></li>
+                        <div class="dropdown-divider"></div>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                  <div class="dropdown-divider"></div>
+  
+                  <li class="dropdown-submenu">
+                    <a id="charTwoFilterTxt">Character 2: {{ character_filters[1] }}</a>
+                    <ul id="dropdown2UL" class="dropdown-menu">
+                      {% for char_num in range(0,num_chars) %}
+                        <li onclick="changeCharDropdown(this, 'charTwoFilterTxt')" style="color: white;"><a>{{ char_data[char_num] }}</a></li>
+                        <div class="dropdown-divider"></div>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                  <div class="dropdown-divider"></div>
+  
+                  <li class="dropdown-submenu">
+                    <a id="charThreeFilterTxt">Character 3: {{ character_filters[2] }}</a>
+                    <ul id="dropdown3UL" class="dropdown-menu">
+                      {% for char_num in range(0,num_chars) %}
+                        <li onclick="changeCharDropdown(this, 'charThreeFilterTxt')" style="color: white;"><a>{{ char_data[char_num] }}</a></li>
+                        <div class="dropdown-divider"></div>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                  <div class="dropdown-divider"></div>
+  
+                  <li class="dropdown-submenu">
+                    <a id="charFourFilterTxt">Character 4: {{ character_filters[3] }}</a>
+                    <ul id="dropdown4UL" class="dropdown-menu">
+                      {% for char_num in range(0,num_chars) %}
+                        <li onclick="changeCharDropdown(this, 'charFourFilterTxt')" style="color: white;"><a>{{ char_data[char_num] }}</a></li>
+                        <div class="dropdown-divider"></div>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                  <div class="dropdown-divider"></div>
+  
+  
+                </ul>
+              </li>
+              <div class="dropdown-divider"></div>
+  
+              <!-- Stage Filter -->
+              <li class="dropdown-submenu">
+                <a > Stage filter</a>
+                <ul id="stageUL" class="dropdown-menu">
+                  {% for stage_num in range(0,num_stages) %}
+                    {% if stage_num != 20 %}
+                      <li onclick="changeStageDropdown(this)" style="color: white;"><a>{{ stage_data[stage_num+1] }}</a></li>
+                      <div class="dropdown-divider"></div>
+                    {% endif %}
+                  {% endfor %}
+                </ul>
+              </li>
+              <div class="dropdown-divider"></div>
+              
+              <!-- Tournament Filter -->
+              <li class="dropdown-submenu">
+                <a> Tournament filters</a>
+                <ul id="tourneyUL" class="dropdown-menu">
+                  <li onclick="changeTourneyDropdown(this)" id="noneTourney" class="dropdown-submenu"><a>None</a></li>
+                  <div class="dropdown-divider"></div>
+                  <li id="allTourney" class="dropdown-submenu" onclick="changeTourneyDropdown(this)"><a>All</a></li>
+                  <div class="dropdown-divider"></div>
+
+                  {% for t, st_list in tournaments.items() %}
+                  <li id="{{t}}" class="dropdown-submenu">
+                    <a>{{ t }}</a>
+                    <ul class="dropdown-menu">
+                      <li id="{{t}}_None" onclick="changeTourneyDropdown(this)"><a>None</a></li>
+                      <div class="dropdown-divider"></div>
+                      <li id="{{t}}_All" onclick="changeTourneyDropdown(this)"><a>All</a></li>
+                      <div class="dropdown-divider"></div>
+                      {% for st in st_list %}
+                        <li id="{{t}}_{{st}}" onclick="changeTourneyDropdown(this)"><a>{{ st }}</a></li>
+                        <div class="dropdown-divider"></div>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                  <div class="dropdown-divider"></div>
+                  {% endfor %}
+  
+                </ul>
+              </li>
+              <div class="dropdown-divider"></div>
+              
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Download dropdown -->
+    <div class="col-3 col-12-medium">
+      <div class="container">
+        <div class="row">
+          <div class="dropdown">
+            <a id="downloadLabel" role="button" data-toggle="dropdown" class="btn btn-primary" data-target="#" style="color: white;">Download Options<span class="caret"></span></a>
+            <ul class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu">
+              <button type="button" id="downloadSubmit" onclick="downloadFilter(this)" class="btn btn-success">Download Selected</button>
+              <button type="button" id="downloadAll" onclick="downloadFilter(this)" class="btn btn-success">Download All Items in Filter</button><br/>
+              <div class="dropdown-divider"></div>
+
+              <button type="button" id="resetForm" onclick="resetFilterForm()" class="btn btn-success">Reset filters</button>
+              <button type="button" id="selectAllBtn" onclick="selectAll()" class="btn btn-success">Check all</button>
+              <button type="button" id="deselectAllBtn" onclick="deselectAll()" class="btn btn-success">Uncheck all</button>
+              <div class="dropdown-divider"></div>
+
+
+              <button type="button" id="downloadSLPFilesBtn" onclick="toggleSLPFilesDownload()" class="btn btn-secondary">Download .slp files</button><br/>
+              <button type="button" id="downloadVideoFilesBtn" onclick="toggleVideoFilesDownload()" class="btn btn-secondary">Download video files</button>
+              <div class="dropdown-divider"></div>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Filter button -->
+    <div class="col-3 col-12-medium">
+      <div class="container" style="width: 100%; height: 100%; font-size: large; text-align: center;">
+        <div class="row" style="width: 100%; height: 100%;">
+          <div class="dropdown">
+           <a id="dLabel" role="button" data-toggle="dropdown" class="btn btn-success" onclick="document.getElementById('filterSubmit').click()" data-target="#" href="/page.html">Filter Replays<span class="caret"></span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  </div>
+  </br> 
+  <div class="row" style="margin: auto; width: 100%; text-align:center;">
+    <div class="custom-control custom-switch" style="margin:auto;">
+      <input type="checkbox" class="custom-control-input" id="changeViewSwitch" onclick="changeView()">
+      <label class="custom-control-label" for="changeViewSwitch" style="color: white; font-size: large;" id="changeViewLabel">Viewing replays</label>
+    </div>
+  </div>
+
+  <br/>
+  {% for mess in get_flashed_messages()  %}
+    <div class="alert alert-warning alert-dismissible fade show" id="flashDiv" role="alert">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" class="fade close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      {{mess}}
+    </div>
+  {% endfor %}
+
+  <!-- Change page carrots -->
+  <input type="submit" id="filterSubmit" value="Filter" style="visibility: hidden;" class="btn btn-info" />
+  </form>
+  
+  
+  <form id="downloadSelected">
+    <div class="tableHolder" id="tableParentDiv">
+      <div class="tableOverflowHolder">
+        <table class="display" id="replayTable" style="overflow: scroll;">
+          <thead>
+            <tr>
+              <th scope="col">Select</th>
+              <th scope="col">Video</th>
+              <th scope="col">UID</th>
+              <th scope="col">Tournament</th>
+              <th scope="col">Subset</th>
+              <th scope="col">Notes</th>
+              <th scope="col">Timestamp</th>
+              <th scope="col">Duration</th>
+              <th scope="col">Stage</th>
+              <th scope="col">P1 Character</th>
+              <th scope="col">P1 Code</th>
+              <th scope="col">P1 Name</th>
+              <th scope="col">P2 Character</th>
+              <th scope="col">P2 Code</th>
+              <th scope="col">P2 Name</th>
+              <th scope="col">P3 Character</th>
+              <th scope="col">P3 Code</th>
+              <th scope="col">P3 Name</th>
+              <th scope="col">P4 Character</th>
+              <th scope="col">P4 Code</th>
+              <th scope="col">P4 Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for replay in replay_data %}
+              <tr>
+                <td><input type="checkbox" name="{{replay['file']}}" />&nbsp;</td>
+                {% if replay['video'] is not none %}
+                  {% if replay['video']|length == 11 %}
+                    <td><i id="{{ replay['video'] }}" onclick="playVideo(this)" class="fa fa-play-circle fa-lg" disabled></i></td>
+                  {% else %}
+                    <td><i id="{{url_for('static', filename='videos/' ~ replay['video'])}}" onclick="playVideo(this)" class="fa fa-play-circle fa-lg" disabled></i></td>
+                  {% endif %}
+
+                {% else %}
+                  <td><i class="fa fa-cog fa-lg" onclick="playVideo(this)"></i></td>
+                {% endif %}
+                <td>{{ replay['uid'] }}</td>
+                <td>{{ replay['tourney'] }}</td>
+                <td>{{ replay['subTourney'] }}</td>
+                <td>{{ replay['notes'] }}</td>
+                <td>{{ replay['timestamp'] }}</td>
+                <td>{{ replay['duration'] }}</td>
+                <td>{{ replay['stage'] }}</td>
+                <td>{{ replay['p0_char'] }}</td>
+                <td>{{ replay['p0_code'] }}</td>
+                <td>{{ replay['p0_name'] }}</td>
+                <td>{{ replay['p1_char'] }}</td>
+                <td>{{ replay['p1_code'] }}</td>
+                <td>{{ replay['p1_name'] }}</td>
+                <td>{{ replay['p2_char'] }}</td>
+                <td>{{ replay['p2_code'] }}</td>
+                <td>{{ replay['p2_name'] }}</td>
+                <td>{{ replay['p3_char'] }}</td>
+                <td>{{ replay['p3_code'] }}</td>
+                <td>{{ replay['p3_name'] }}</td>
+              </tr>
+            {% endfor %}
+            
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <input type="hidden" id="currentTime" name="currentTime"/>
+    <!-- <input type="submit" id="downloadSubmit" value="Download" style="visibility: hidden; width: 0px; height: 0px;" class="btn btn-info"/> -->
+  </form>
+
+  <div id="clipsParent" class="grid-container" style="margin-left: 10px; margin-right: 10px; margin-bottom: 10px; display: none; background-color: rgba(94, 66, 166, 0.5) !important; text-align: center; width: 100%">
+    
+    <input type="text" placeholder="Enter an ID to filter" id="clipFilterTxt" name="clipFilterTxt" style="float: right; margin-right: 25px; margin-top: 10px; background-color: rgb(93,66,164); border-color: white; color: white;"></input>
+    <div class="custom-control custom-switch" style="float: left; margin-left: 25px; margin-top: 10px; ;">
+      <input type="checkbox" class="custom-control-input" id="autoplayClips" onclick="toggleAutoplay()">
+      <label class="custom-control-label" for="autoplayClips" style="color: white; font-size: large;" id="autoplayClipsLbl">Autoplay disabled (autoplay not recommended on mobile)</label>
+    </div>
+
+    <div class="container" style="width: 100%">
+      <button class="btn btn-info" onclick="prevClips()" id="prevClipsBtn" disabled><</button>
+      <label id="clipsInfoLabel" style="color: white; margin-left: 5px; margin-right: 5px;"></label>
+      <button class="btn btn-info" onclick="nextClips()" id="nextClipsBtn">></button>
+    </div>
+
+    </br>
+  </div>
+
+  <input type="hidden" value="{{clip_data}}" id="clipData">
+  <input type="hidden" value="0" id="clipStart">
+    
+  
+</body>
+
+
+<script>
+  //Initialize a time key, which goes to milliseconds. Odds of collision are low.
+  const d = new Date();
+  let time = d.getTime();
+  var timeInput = document.getElementById("currentTime")
+  timeInput.value = time
+
+  //Polling variables
+  pollInterval = 0
+  currentlyDownloading = false;
+
+  var jsonClipData = new Object();
+  var filteredClipData = new Object();
+  
+
+  //Create datatables
+  $(document).ready(function() {
+    $('#replayTable').DataTable();
+  });
+  
+</script>
+
+
+
+<script>
+  //Select all currently visible items
+  function selectAll() {
+    let checkBoxes = document.getElementById('replayTable').getElementsByTagName('input');
+    for (var i = 0; i < checkBoxes.length; i++) {
+      checkBoxes[i].checked = true;
+    }
+  }
+
+  //Deselect all currently visible items
+  function deselectAll() {
+    let checkBoxes = document.getElementById('replayTable').getElementsByTagName('input');
+    for (var i = 0; i < checkBoxes.length; i++) {
+      checkBoxes[i].checked = false;
+    }
+  }
+  
+  //Reset all items in the filter
+  function resetFilterForm() {
+    document.getElementById("playerOneFilter").value = ''
+    document.getElementById("playerTwoFilter").value = ''
+    document.getElementById("playerThreeFilter").value = ''
+    document.getElementById("playerFourFilter").value = ''
+
+    document.getElementById("char1").value = ''
+    document.getElementById("char2").value = ''
+    document.getElementById("char3").value = ''
+    document.getElementById("char4").value = ''
+
+    document.getElementById("stageInput").value = ''
+    document.getElementById("tourneyInput").value = ''
+    document.getElementById("subTourneyInput").value = ''
+
+    document.getElementById("filterSearch").submit();
+  }
+
+  
+  //Initialize dropdowns based on prior filters
+  function initializeDropdowns() {
+    //Scroll to top
+    document.body.scrollTop = document.documentElement.scrollTop = 0;
+
+    //Initialize char dropdowns
+    dropdowns = ["dropdown1UL", "dropdown2UL", "dropdown3UL", "dropdown4UL"]
+    for (let d=0; d < dropdowns.length; d++) {
+      var dropdown = document.getElementById(dropdowns[d])
+      var char = document.getElementById("char" + (d+1)).value
+      var childrenNodes = dropdown.children
+
+      for (let i=0; i < childrenNodes.length; i++) {
+        try {
+          if (childrenNodes[i].children[0].innerHTML == char) {
+            childrenNodes[i].style.backgroundColor = 'green';
+          }
+
+        } catch (v) {}
+      }
+    }
+
+    //Initialize stage dropdown
+    var dropdown = document.getElementById('stageUL')
+    var stage = document.getElementById("stageInput").value
+    var childrenNodes = dropdown.getElementsByTagName('li')
+
+    if (stage != '') {
+      for (let i=0; i < childrenNodes.length; i++) {
+        try {
+          if (childrenNodes[i].firstChild.innerHTML == stage) {
+            childrenNodes[i].style.backgroundColor = 'green';
+          }
+        } catch (v) {}
+      }
+    }
+
+    //Initialize tournament dropdown
+    var tourneyInput = document.getElementById("tourneyInput")
+    var subTourneyInput = document.getElementById("subTourneyInput")
+
+    //Set new green and values
+    if ((tourneyInput.value != '' && subTourneyInput.value != '') && (tourneyInput.value != 'None' && tourneyInput.value != 'All')) {
+      document.getElementById(tourneyInput.value).style.backgroundColor = 'green';
+      document.getElementById(tourneyInput.value + "_" + subTourneyInput.value).style.backgroundColor = 'green';
+    } else if (tourneyInput.value == 'None' ) {
+      document.getElementById('noneTourney').style.backgroundColor = 'green';
+    } else if (tourneyInput.value == 'All') {
+      document.getElementById('allTourney').style.backgroundColor = 'green';
+    }
+
+    //Check if user wants SLP files downloaded
+    var slpCurrent = document.getElementById("downloadSLPFiles").value
+    if (slpCurrent == 1) {
+      document.getElementById("downloadSLPFilesBtn").className = "btn btn-success"
+    } else {
+      document.getElementById("downloadSLPFilesBtn").className = "btn btn-secondary"
+    }
+
+    //Check if user wants video files downloaded
+    var videoCurrent = document.getElementById("downloadVideoFiles").value
+    if (videoCurrent == 1) {
+      document.getElementById("downloadVideoFilesBtn").className = "btn btn-success"
+    } else {
+      document.getElementById("downloadVideoFilesBtn").className = "btn btn-secondary"
+    }
+
+    //Initialize clip data
+    if (document.getElementById("clipData").value != '') {
+      try {
+        jsonClipData = JSON.parse(document.getElementById("clipData").value)
+        filteredClipData = jsonClipData
+        document.getElementById("clipData").value = ""
+      } catch (error) {
+        jsonClipData = new Object();
+        filteredClipData = new Object();
+        document.getElementById("clipData").value = ""
+      }
+    }
+  }
+
+
+  //Change the character dropdown highlights based on user selection
+  function changeCharDropdown(src, buttonID) {    
+    if (buttonID == 'charOneFilterTxt') {
+      charNum = 1;
+    } else if (buttonID == 'charTwoFilterTxt') {
+      charNum = 2;
+    } else if (buttonID == 'charThreeFilterTxt') {
+      charNum = 3;
+    } else if (buttonID == 'charFourFilterTxt') {
+      charNum = 4;
+    }
+
+    for (let i=0; i < src.parentNode.children.length; i++) {
+      src.parentNode.children[i].style.backgroundColor = null;
+    }
+
+    document.getElementById(buttonID).innerHTML = "Character " + charNum + ": " + src.children[0].innerHTML
+    src.style.backgroundColor = 'green';
+
+    document.getElementById("char"+charNum).value=src.children[0].innerHTML
+  }
+
+  //Change the stage dropdown based on user selection to highlight that selection
+  function changeStageDropdown(src) { 
+    for (let i=0; i < src.parentNode.children.length; i++) {
+      src.parentNode.children[i].style.backgroundColor = null;
+    }
+
+    src.style.backgroundColor = 'green';
+    document.getElementById('stageInput').value = src.children[0].innerHTML
+  }
+
+  //Change the tournament dropdown based on user selection to highlight that selection
+  function changeTourneyDropdown(src) {
+    //Get new tournaments
+    var tournament = src.parentNode.parentNode.id
+    var subTournament = src.children[0].innerHTML
+
+    //Remove prior tournament green
+    var tourneyInput = document.getElementById("tourneyInput")
+    var subTourneyInput = document.getElementById("subTourneyInput")
+
+    if (tourneyInput.value != '' && subTourneyInput.value != '' & tourneyInput.value != 'None' & tourneyInput.value != 'All') {
+      document.getElementById(tourneyInput.value).style.backgroundColor = null;
+      document.getElementById(tourneyInput.value + "_" + subTourneyInput.value).style.backgroundColor = null;
+    } else if (tourneyInput.value == 'None' ) {
+      document.getElementById('noneTourney').style.backgroundColor = null;
+    } else if (tourneyInput.value == 'All') {
+      document.getElementById('allTourney').style.backgroundColor = null;
+    }
+
+    //Set new green and values
+    if (src.id != 'allTourney' && src.id != 'noneTourney') {
+      src.parentNode.parentNode.style.backgroundColor = 'green';
+      src.style.backgroundColor = 'green';
+
+      tourneyInput.value = tournament
+      subTourneyInput.value = subTournament
+    } else {
+      src.style.backgroundColor = 'green';
+
+      tourneyInput.value = src.children[0].innerHTML
+      subTourneyInput.value =  src.children[0].innerHTML
+    }
+    
+  }
+
+  //Toggle whether to download SLP files or not
+  function toggleSLPFilesDownload() {
+    var current = document.getElementById("downloadSLPFiles").value
+    if (current == 0) {
+      current = 1
+      document.getElementById("downloadSLPFilesBtn").className = "btn btn-success"
+    } else {
+      current = 0
+      document.getElementById("downloadSLPFilesBtn").className = "btn btn-secondary"
+    }
+    document.getElementById("downloadSLPFiles").value = current
+  }
+
+  //Toggle whether to download video files or not
+  function toggleVideoFilesDownload() {
+    var current = document.getElementById("downloadVideoFiles").value
+    if (current == 0) {
+      current = 1
+      document.getElementById("downloadVideoFilesBtn").className = "btn btn-success"
+    } else {
+      current = 0
+      document.getElementById("downloadVideoFilesBtn").className = "btn btn-secondary"
+    }
+    document.getElementById("downloadVideoFiles").value = current
+  }
+  </script>
+
+
+<script>
+//Polling for downloads
+var pollSent = 0
+var pollReceived = 0
+
+
+function poll(time){
+  //Get the time used as a key when page loaded
+  var currentTime = document.getElementById("currentTime")
+  var progressDiv = document.getElementById("downloadProgress")
+  var data = {'currentTime': currentTime.value}
+  pollSent += 1
+
+  //Send poll
+  $.ajax({
+      //First, get the signed URL
+      type: "POST",
+      url: "/pollDownload",
+      data: data,
+      success: function(data) {
+        pollReceived += 1
+
+        //If the poll is some URL and num polls sent == num polls received, then done
+        if (pollSent == pollReceived && data.progress != 'Zipping files together' && data.progress != 'Creating download link' && data.progress != 'Waiting until other downloads finish') {
+          clearInterval(pollInterval);
+          const d = new Date();
+          let time = d.getTime();
+          var timeInput = document.getElementById("currentTime")
+          timeInput.value = time
+
+          //Disable buttons
+          var downloadAllBtn = document.getElementById("downloadAll")
+          var downloadBtn = document.getElementById("downloadSubmit")
+          var modalCloseButton = document.getElementById("modalCloseOptionsBtn")
+
+          downloadAllBtn.disabled = false
+          downloadBtn.disabled = false
+          modalCloseButton.disabled = false
+          
+          currentlyDownloading = false
+          
+          //Check progress, if not -1 then good to go
+          if (data.progress != -1) {
+            top.location.href = data.progress;
+            progressDiv.innerHTML = "Downloading!"
+          
+          // error of some kind
+          } else { 
+            progressDiv.innerHTML = "There was an error creating the download, please contact support at the bottom of the home page"
+          }
+        
+        //Not done downloaing, update progress div
+        } else {
+          progressDiv.innerHTML = data.progress
+        }
+      }
+    });
+  }
+
+//Get items in current filter
+function getFilteredItems() {
+  var retArr = []
+  var getReplayFiles = document.getElementById('downloadSLPFiles').value
+  var getVideoFiles = document.getElementById('downloadVideoFiles').value
+  var data = $('#replayTable').DataTable().rows({filter: 'applied'}).data()
+
+  var firstPartOfString = "<input type=\"checkbox\" name=\""
+  var lastPartOfString = "\">&nbsp;"
+  //console.log(data)
+
+  for (let i = 0; i < data.length; i++) {
+    if (getReplayFiles == 1) {
+      retArr.push(data[i][0].substring(firstPartOfString.length, data[i][0].indexOf(lastPartOfString)) + '.zip')
+    }
+
+    if (getVideoFiles == 1 && data[i][1].indexOf('.mp4') >= 0) {
+      retArr.push(data[i][0].substring(firstPartOfString.length, data[i][0].indexOf(lastPartOfString)) + '.mp4')
+    }
+  }
+
+  return retArr
+}
+
+//Get items currently selected
+function getSelectedItems() {
+  var retArr = []
+  var getReplayFiles = document.getElementById('downloadSLPFiles').value
+  var getVideoFiles = document.getElementById('downloadVideoFiles').value
+  var table = document.getElementById('replayTable')
+
+  for (let i = 1; i < table.rows.length; i++) {
+    if (table.rows[i].cells[0].children[0].checked) {
+      if (getReplayFiles == 1) {
+        retArr.push(table.rows[i].cells[0].children[0].name + '.zip')
+      }
+      if (getVideoFiles == 1 && table.rows[i].cells[1].children[0].id.indexOf('.mp4') >= 0) {
+        retArr.push(table.rows[i].cells[0].children[0].name + '.mp4')
+      }
+    }
+  }
+
+  return retArr
+}
+
+//Download items
+function downloadFilter(src) {  
+  if (src.id == 'downloadSubmit') {
+    var requestedItems = getSelectedItems()
+  } else {
+    var requestedItems = getFilteredItems()
+  }
+  //Prepare data
+  var timeInput = document.getElementById("currentTime")
+  var time = timeInput.value
+
+  var currentTournament = document.getElementById("tourneyInput").value
+  var currentSubTournament = document.getElementById("subTourneyInput").value
+
+  //Disable buttons
+  var downloadAllBtn = document.getElementById("downloadAll")
+  var downloadBtn = document.getElementById("downloadSubmit")
+  var modalCloseButton = document.getElementById("modalCloseOptionsBtn")
+  
+  downloadAllBtn.disabled = true
+  downloadBtn.disabled = true
+  modalCloseButton.disabled = true
+
+  pollSent = 0
+  pollReceived = 0
+  currentlyDownloading = true
+
+  var progressDiv = document.getElementById("downloadProgress")
+  progressDiv.innerHTML = "Waiting for other downloads to finish"
+
+  //Get number of files
+
+  if (requestedItems.length >= 50 || document.getElementById('downloadVideoFiles').value == 1) {
+    document.getElementById("downloadOptionsTxt").innerHTML = "It looks like you're trying to download <b>" + requestedItems.length + " files</b>, some of which may be large video files. Would you like to stay on this page and wait for the download, or have an email sent to you when the download is ready?"
+    document.getElementById("downloadOptionsBtn").click()
+
+    //If wait specified, just do normal download
+    $('#modalWaitBtn').click(function() {
+      var data = {'requestedItems': JSON.stringify(requestedItems), 'currentTime': time, "email": false}
+      $.ajax({
+        //First, get the signed URL
+        type: "POST",
+        url: "/downloadItems",
+        data: data,
+
+        success: function(data) {
+          if (data.result < 0) {
+            currentlyDownloading = false
+            location.reload()
+
+          } else if (data.result > 1) {
+            currentlyDownloading = false
+            window.location.href = "/#account"
+
+          } else {
+            document.getElementById("downloadModalBtn").click()
+            pollInterval = setInterval(function() { 
+              poll(time);
+            }, 2000);
+          }
+        }
+      });
+    });
+
+    //Email specified, just 
+    $('#modalEmailBtn').click(function() {
+      var data = {'requestedItems': JSON.stringify(requestedItems), 'currentTime': time, "email": true}
+        $.ajax({
+        //First, get the signed URL
+        type: "POST",
+        url: "/downloadItems",
+        data: data,
+
+        success: function(data) {
+          if (data.result < 0) {
+            currentlyDownloading = false
+            location.reload()
+
+          } else if (data.result > 1) {
+            currentlyDownloading = false
+            window.location.href = "/#account"
+
+          } else {
+            currentlyDownloading = false
+            location.reload()
+          }
+        }
+      });
+    });
+
+      //Do nothing specified 
+      $('#modalCloseBtn').click(function() {
+        downloadAllBtn.disabled = false
+        downloadBtn.disabled = false
+        modalCloseButton.disabled = false
+        
+        currentlyDownloading = false
+    });
+
+  //If less than 50 files, just force user to wait
+  } else {
+    //console.log(requestedItems)
+    var data = {'requestedItems': JSON.stringify(requestedItems), 'currentTime': time, "email": false}
+      $.ajax({
+      //First, get the signed URL
+      type: "POST",
+      url: "/downloadItems",
+      data: data,
+
+      success: function(data) {
+        if (data.result < 0) {
+          currentlyDownloading = false
+          location.reload()
+
+        } else if (data.result > 1) {
+          currentlyDownloading = false
+          window.location.href = "/#account"
+
+        } else {
+          document.getElementById("downloadModalBtn").click()
+          pollInterval = setInterval(function() { 
+            poll(time);
+          }, 2000);
+        }
+      }
+    });
+  }
+}
+
+
+//Play video, whether youtube or local
+function playVideo(src) {
+  document.getElementById('videoModalBtn').click()
+  video = document.getElementById('videoBody')
+
+  try {
+    document.getElementById("clipError").innerHTML = ""
+    document.getElementById("startMin").value = ""
+    document.getElementById("startSecond").value = ""
+    document.getElementById("endMin").value = ""
+    document.getElementById("endSecond").value = ""
+  } catch (error) {}
+  
+
+  if (src.id.length == 11) {
+    video.innerHTML = '<iframe width="750" height="550" src="https://www.youtube.com/embed/' + src.id + '?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; picture-in-picture" allowfullscreen></iframe>'
+  } else if (src.id != '') {
+    video.innerHTML = "<video id='videoPlayer' width='650' height='550' controls controlsList='nodownload' style='text-align: center;'><source id='videoPlayerSource' src='" + src.id + "' type='video/mp4'>Your browser does not support the video tag.</video>"
+    videoPlayer = document.getElementById("videoPlayer")
+    videoPlayer.load();
+    videoPlayer.play();
+  } else {
+    
+    video.innerHTML = "There is no associated video to play. You can still make a clip here if you'd like."
+  }
+
+  currentMaxFrames.value = src.parentNode.parentNode.children[7].innerHTML
+  currentSLPFile.value = src.parentNode.parentNode.children[0].children[0].name
+  currentUID.value = src.parentNode.parentNode.children[2].innerHTML
+}
+
+//Stop the video by just deleting the innerHTML of the video player
+function stopPlayingVideo(src) {
+  video = document.getElementById('videoBody')
+  video.innerHTML = ""
+}
+</script>
+
+
+
+<script>
+//Section for creating highlights requests through SSBM Gifs
+
+function validateTime(src) {
+  var startMin = document.getElementById("startMin")
+  var startSecond = document.getElementById("startSecond")
+  var endMin = document.getElementById("endMin")
+  var endSecond = document.getElementById("endSecond")
+
+  //Check start minute
+  if (startMin.value < 0) {
+    startMin.value = 0;
+  } else if (startMin.value > 8) {
+    startMin.value = 8;
+  }
+
+  //Check end minute
+  if (endMin.value < 0) {
+    endMin.value = 0;
+  } else if (endMin.value > 8) {
+    endMin.value = 8;
+  }
+
+  //Check start second
+  if (startSecond.value < 0) {
+    startSecond.value = 0;
+  } else if (startSecond.value > 60) {
+    startSecond.value = 60;
+  }
+
+  //Check end second
+  if (endSecond.value < 0) {
+    endSecond.value = 0;
+  } else if (endSecond.value > 60) {
+    endSecond.value = 60;
+  }
+}
+
+
+function changeFPS(src) {
+  //FPS Items
+  var sixtyFPSBtn = document.getElementById("60fps")
+  var maxFPSBtn = document.getElementById("120fps")
+  var fpsValue = document.getElementById("fpsSetting")
+
+  //Resolution items
+  var normalResolutionBtn = document.getElementById("normalResolution")
+  var highResolutionBtn = document.getElementById("highResolution")
+  var resolutionValue = document.getElementById("resolutionSetting")
+
+  if (src.id == "60fps") {
+    sixtyFPSBtn.className = "btn btn-success"
+    maxFPSBtn.className = "btn btn-secondary"
+    fpsValue.value = 60
+  } else {
+    sixtyFPSBtn.className = "btn btn-secondary"
+    maxFPSBtn.className = "btn btn-success"
+    fpsValue.value = 120
+
+    //Change resolution because it takes so much longer for higher resolution 120 FPS items
+    normalResolutionBtn.className = "btn btn-success"
+    highResolutionBtn.className = "btn btn-secondary"
+    resolutionValue = "Normal"
+  }
+}
+
+function changeResolution(src) {
+  var normalResolutionBtn = document.getElementById("normalResolution")
+  var highResolutionBtn = document.getElementById("highResolution")
+  var resolutionValue = document.getElementById("resolutionSetting")
+  var fpsValue = document.getElementById("fpsSetting")
+
+  if (src.id == "normalResolution") {
+    normalResolutionBtn.className = "btn btn-success"
+    highResolutionBtn.className = "btn btn-secondary"
+    resolutionValue.value = "Normal"
+  } else if (fpsValue.value != 120) {
+    normalResolutionBtn.className = "btn btn-secondary"
+    highResolutionBtn.className = "btn btn-success"
+    resolutionValue.value = "High"
+  }
+}
+
+function createClip() {
+
+  var startMin = document.getElementById("startMin")
+  var startSecond = document.getElementById("startSecond")
+  var endMin = document.getElementById("endMin")
+  var endSecond = document.getElementById("endSecond")
+  var gameEnd = Math.round((parseInt(document.getElementById("currentMaxFrames").value) + 240) / 60)
+  var errorLabel = document.getElementById("clipError")
+  errorLabel.style.color = "red";
+
+  //Get integer values for all
+  if (!Number.isNaN(parseInt(startMin.value))) {
+    var startMinValue = parseInt(startMin.value)
+  } else {
+    var startMinValue = 0
+  }
+
+  if (!Number.isNaN(parseInt(startSecond.value))) {
+    var startSecondValue = parseInt(startSecond.value)
+  } else {
+    var startSecondValue = 0
+  }
+
+  if (!Number.isNaN(parseInt(endMin.value))) {
+    var endMinValue = parseInt(endMin.value)
+  } else {
+    var endMinValue = 0
+  }
+
+  if (!Number.isNaN(parseInt(endSecond.value))) {
+    var endSecondValue = parseInt(endSecond.value)
+  } else {
+    var endSecondValue = 0
+  }
+
+  //Reset error borders and vals
+  startMin.style.borderColor = "transparent";
+  startSecond.style.borderColor = "transparent";
+  endMin.style.borderColor = "transparent";
+  endSecond.style.borderColor = "transparent";
+  errorLabel.innerHTML = ""
+  
+  //Create start and end time
+  var startTime = (startMinValue * 60) + parseInt(startSecondValue)
+  var endTime = (endMinValue * 60) + parseInt(endSecondValue)
+  var duration = endTime - startTime
+  
+
+  //Make sure start time is less than end time
+  if (startTime >= endTime) {
+    startMin.style.borderColor = "red";
+    startSecond.style.borderColor = "red";
+    errorLabel.innerHTML = "Start time must be before end time"
+    return;
+  }
+
+  //Make sure end time is less than max frames
+  if (endTime > gameEnd) {
+    endMin.style.borderColor = "red";
+    endSecond.style.borderColor = "red";
+    errorLabel.innerHTML = "Clip end time must be before game end which is: " + gameEnd
+    return;
+  }
+
+  //Make sure start time >= 0
+  if (startTime < 0) {
+    startMin.style.borderColor = "red";
+    startSecond.style.borderColor = "red";
+    errorLabel.innerHTML = "Start time must be >= 0"
+    return;
+  }
+
+  //Make sure end time >= 0
+  if (endTime < 0) {
+    endMin.style.borderColor = "red";
+    endSecond.style.borderColor = "red";
+    errorLabel.innerHTML = "End time must be >= 0"
+    return;
+  }
+  
+  //Make sure duration is less than 15 seconds
+  if (duration > 15) {
+    startMin.style.borderColor = "red";
+    startSecond.style.borderColor = "red";
+    endMin.style.borderColor = "red";
+    endSecond.style.borderColor = "red";
+    errorLabel.innerHTML = "Highlight length must be <= 15 seconds"
+    return;
+  }
+
+  //Make sure duration is > 0
+  if (duration <= 1) {
+    startMin.style.borderColor = "red";
+    startSecond.style.borderColor = "red";
+    endMin.style.borderColor = "red";
+    endSecond.style.borderColor = "red";
+    errorLabel.innerHTML = "Highlight length must be > 1 second"
+    return;
+  }
+
+  
+  data = {"start": startTime, "end": endTime, "fps": fpsSetting.value, "resolution": resolutionSetting.value, "discordID": discordID.value, "discordUsername": discordUsername.value, "slpFile": currentSLPFile.value, "uid": currentUID.value}
+  clipBtn.disabled = true;
+  $.ajax({
+    //First, get the signed URL
+    type: "POST",
+    url: "/discordHighlight",
+    data: data,
+    success: function(data) {
+      if (data.result != 1) {
+        errorLabel.innerHTML = "Error creating highlight, support has been contacted"
+        clipBtn.disabled = false;
+      } else {
+        errorLabel.style.color = 'green';
+        errorLabel.innerHTML = "Highlight request successful - you will get a discord message when it's done."
+        clipBtn.disabled = false;
+      }
+    }
+  });
+}
+</script>
+
+<script>
+  function changeView() {
+    var checked = document.getElementById("changeViewSwitch").checked;
+    var tableDiv = document.getElementById("tableParentDiv");
+    var clipsDiv = document.getElementById("clipsParent");
+    
+    if (checked) {
+      changeViewLabel.innerHTML = "Viewing clips"
+      downloadLabel.disabled = true;
+      
+
+      fadeOutElement(tableDiv)
+      var timer = setInterval(function () {
+        clearInterval(timer);
+        fadeInElement(clipsDiv)
+      }, 800);
+
+      //Remove old videos
+      for (let i = clipsDiv.children.length-1; i >= 0 ; i--) {
+        var child = clipsDiv.children[i];
+        if (child.className == 'video-container') {
+          clipsDiv.removeChild(child)
+        }
+      }
+      
+      //Add items to video container
+      document.getElementById("clipStart").value = 0
+      endIdx = Math.min(10, Object.keys(jsonClipData).length)
+
+      //Add in new clip items
+      for (let i = 0; i < endIdx; i++) {
+        uid = jsonClipData[i][1]
+        startTime = jsonClipData[i][3]
+        endTime = jsonClipData[i][4]
+        clipsDiv.innerHTML += '<div class="video-container"><center><label class="video-title">UID: ' + uid + ', Timestamp: ' + startTime + '-' + endTime + '</label></center><video width="600" height="400" loop style="margin-bottom: 15px;" onclick="playClip(this)"><source src="' + jsonClipData[i][2] + '" type="video/mp4"></video></div>'
+      }
+      document.getElementById("clipsInfoLabel").innerHTML = "Viewing 1-" + endIdx + " of " + Object.keys(jsonClipData).length
+
+      var autoplayChecked = document.getElementById("autoplayClips").checked;
+      if (autoplayChecked) {
+        //Autoplay current videos
+        for (let i = clipsDiv.children.length-1; i >= 0 ; i--) {
+          var child = clipsDiv.children[i];
+          if (child.className == 'video-container') {
+            child.children[1].play()
+          }
+        }
+      }
+
+      if (endIdx == Object.keys(jsonClipData).length) {
+        document.getElementById("nextClipsBtn").disabled = true;
+      }
+
+    } else {
+      changeViewLabel.innerHTML = "Viewing replays"
+      fadeOutElement(clipsDiv)
+      var timer = setInterval(function () {
+        clearInterval(timer);
+        fadeInElement(tableDiv)
+      }, 800);
+      downloadLabel.disabled = false;
+    }
+  }
+
+  function playClip(src) {
+    var autoplayChecked = document.getElementById("autoplayClips").checked;
+    if (src.paused == false) {
+      src.pause()
+    } else {
+      src.play()
+    }
+    
+  }
+
+  function fadeOutElement(element) {
+    //Fade table div out
+    var op = 1;  // initial opacity
+    var timer = setInterval(function () {
+        if (op <= 0.15){
+            clearInterval(timer);
+            element.style.display = 'none';
+            return true;
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op -= op * 0.1;
+    }, 25);
+  }
+
+  function fadeInElement(element) {
+    
+    var op = 0.1;  // initial opacity
+    element.style.display = 'inline-block';
+    var timer = setInterval(function () {
+        if (op >= 1){
+            clearInterval(timer);
+            if (element.id == "clipsParent") {
+              document.getElementById('clipFilterTxt').addEventListener('input', onFilterTxtChange)
+            }
+        }
+        element.style.opacity = op;
+        element.style.filter = 'alpha(opacity=' + op * 100 + ")";
+        op += op * 0.1;
+    }, 10);
+  }
+
+
+
+
+  function prevClips() {
+    var clipStart = parseInt(document.getElementById("clipStart").value)
+    var startIdx = Math.max(clipStart - 10, 0)
+    var videoParent = document.getElementById("clipsParent")
+    document.getElementById("clipStart").value = startIdx
+
+    //Remove current videos
+    for (let i = videoParent.children.length-1; i >= 0 ; i--) {
+      var child = videoParent.children[i];
+      if (child.className == 'video-container') {
+        videoParent.removeChild(child)
+      }
+    }
+
+    end_idx = Math.min(startIdx + 10, Object.keys(filteredClipData).length)
+    //Add new videos
+    for (let i = startIdx; i < end_idx; i++) {
+      uid = filteredClipData[i][1]
+      startTime = filteredClipData[i][3]
+      endTime = filteredClipData[i][4]
+      videoParent.insertAdjacentHTML('beforeend', '<div class="video-container"><center><label class="video-title">UID: ' + uid + ', Timestamp: ' + startTime + '-' + endTime + '</label></center><video width="600" height="400" loop style="margin-bottom: 15px;" onclick="playClip(this)" controlsList="nodownload"><source src="' + jsonClipData[i][2] + '" type="video/mp4"></video></div>')
+    }
+
+    if (startIdx == 0) {
+      document.getElementById("prevClipsBtn").disabled = true;
+    }
+
+    if (end_idx < Object.keys(filteredClipData).length) {
+      document.getElementById("nextClipsBtn").disabled = false;
+    }
+
+    document.getElementById("clipsInfoLabel").innerHTML = "Viewing " + (startIdx+1) + "-" + end_idx + " of " + Object.keys(filteredClipData).length
+    var autoplayChecked = document.getElementById("autoplayClips").checked;
+    if (autoplayChecked) {
+      //Autoplay current videos
+      for (let i = videoParent.children.length-1; i >= 0 ; i--) {
+        var child = videoParent.children[i];
+        if (child.className == 'video-container') {
+          child.children[1].play()
+        }
+      }
+    }
+  }
+
+
+  function nextClips() {
+    var clipStart = parseInt(document.getElementById("clipStart").value)
+    var startIdx = Math.min(clipStart + 10, Object.keys(filteredClipData).length)
+    var videoParent = document.getElementById("clipsParent")
+    document.getElementById("clipStart").value = startIdx
+
+    //Remove current videos
+    for (let i = videoParent.children.length-1; i >= 0 ; i--) {
+      var child = videoParent.children[i];
+      if (child.className == 'video-container') {
+        videoParent.removeChild(child)
+      }
+    }
+
+    end_idx = Math.min(startIdx + 10, Object.keys(filteredClipData).length)
+    //Add new videos
+    for (let i = startIdx; i < end_idx; i++) {
+      uid = filteredClipData[i][1]
+      startTime = filteredClipData[i][3]
+      endTime = filteredClipData[i][4]
+      videoParent.insertAdjacentHTML('beforeend', '<div class="video-container"><center><label class="video-title">UID: ' + uid + ', Timestamp: ' + startTime + '-' + endTime + '</label></center><video width="600" height="400" loop style="margin-bottom: 15px;" onclick="playClip(this)" controlsList="nodownload"><source src="' + jsonClipData[i][2] + '" type="video/mp4"></video></div>')
+    }
+
+    if (end_idx == Object.keys(filteredClipData).length) {
+      document.getElementById("nextClipsBtn").disabled = true;
+    }
+
+    if (startIdx > 0) {
+      document.getElementById("prevClipsBtn").disabled = false;
+    }
+
+    document.getElementById("clipsInfoLabel").innerHTML = "Viewing " + (startIdx+1) + "-" + end_idx + " of " + Object.keys(filteredClipData).length
+    var autoplayChecked = document.getElementById("autoplayClips").checked;
+    if (autoplayChecked) {
+      //Autoplay current videos
+      for (let i = videoParent.children.length-1; i >= 0 ; i--) {
+        var child = videoParent.children[i];
+        if (child.className == 'video-container') {
+          child.children[1].play()
+        }
+      }
+    }
+  }
+
+
+
+  function onFilterTxtChange(e) {
+    //Reset filtered items and get filter text
+    document.getElementById("clipStart").value = 0
+    var videoParent = document.getElementById("clipsParent")
+    var filterTxt = document.getElementById("clipFilterTxt").value.toLowerCase();
+    var autoplayChecked = document.getElementById("autoplayClips").checked;
+    var filteredClipData = Object();
+    var currentIdx = 0;
+
+    //Go through each item in jsonClipData, if UID contains substring, add it to filteredData
+    for (let i = 0; i < Object.keys(jsonClipData).length; i++) {
+      var uid = jsonClipData[i][1].toLowerCase();
+      if (uid.indexOf(filterTxt) !== -1) {
+        filteredClipData[currentIdx] = jsonClipData[i]
+        currentIdx += 1;
+      }
+    }
+
+    //Remove old items, add new items
+    for (let i = videoParent.children.length-1; i >= 0 ; i--) {
+      var child = videoParent.children[i];
+      if (child.className == 'video-container') {
+        videoParent.removeChild(child)
+      }
+    }
+
+    startIdx = 0
+    end_idx = Math.min(10, Object.keys(filteredClipData).length)
+    //Add new videos
+    for (let i = startIdx; i < end_idx; i++) {
+      uid = filteredClipData[i][1]
+      startTime = filteredClipData[i][3]
+      endTime = filteredClipData[i][4]
+      videoParent.insertAdjacentHTML('beforeend', '<div class="video-container"><center><label class="video-title">UID: ' + uid + ', Timestamp: ' + startTime + '-' + endTime + '</label></center><video width="600" height="400" loop style="margin-bottom: 15px;" onclick="playClip(this)" controlsList="nodownload"><source src="' + jsonClipData[i][2] + '" type="video/mp4"></video></div>')
+    }
+
+    if (end_idx == Object.keys(filteredClipData).length) {
+      document.getElementById("nextClipsBtn").disabled = true;
+    } else {
+      document.getElementById("nextClipsBtn").disabled = false;
+    }
+
+    if (startIdx == 0) {
+      document.getElementById("prevClipsBtn").disabled = true;
+    } else {
+      document.getElementById("prevClipsBtn").disabled = false;
+    }
+
+    document.getElementById("clipsInfoLabel").innerHTML = "Viewing " + (startIdx+1) + "-" + end_idx + " of " + Object.keys(filteredClipData).length
+    document.getElementById('clipFilterTxt').addEventListener('input', onFilterTxtChange)
+
+    var autoplayChecked = document.getElementById("autoplayClips").checked;
+    if (autoplayChecked) {
+      //Autoplay current videos
+      for (let i = videoParent.children.length-1; i >= 0 ; i--) {
+        var child = videoParent.children[i];
+        if (child.className == 'video-container') {
+          child.children[1].play()
+        }
+      }
+    }
+  }
+
+  function toggleAutoplay() {
+    var checked = document.getElementById("autoplayClips").checked;
+    var tableDiv = document.getElementById("tableParentDiv");
+    var clipsDiv = document.getElementById("clipsParent");
+
+    if (checked) {
+      autoplayClipsLbl.innerHTML = "Autoplay enabled (autoplay not recommended on mobile)"
+      var videoParent = document.getElementById("clipsParent")
+
+      //Autoplay current videos
+      for (let i = videoParent.children.length-1; i >= 0 ; i--) {
+        var child = videoParent.children[i];
+        if (child.className == 'video-container') {
+          child.children[1].play()
+        }
+      }
+
+    } else {
+      autoplayClipsLbl.innerHTML = "Autoplay disabled (autoplay not recommended on mobile)"
+      var videoParent = document.getElementById("clipsParent")
+
+      //Autoplay current videos
+      for (let i = videoParent.children.length-1; i >= 0 ; i--) {
+        var child = videoParent.children[i];
+        if (child.className == 'video-container') {
+          child.children[1].pause()
+        }
+      }
+    }
+  }
+</script>
+
+
+
+<script>
+//Just gives the user an "Are you sure?" message before navigating away from page
+window.onbeforeunload = function() {
+  if (currentlyDownloading) {
+    return 'Hi'
+  }
+ }
+</script>

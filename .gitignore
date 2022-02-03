@@ -1,0 +1,14 @@
+*config*
+*test*
+*pycache*
+video_processing/out
+video_processing/processing
+*txt*
+*.json
+static/downloads
+static/processed
+static/unprocessed
+static/videos
+node_modules
+configs
+*vscode*

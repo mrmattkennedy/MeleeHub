@@ -1,0 +1,542 @@
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>MeleeHub</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+
+		<script type="text/javascript" src="https://code.jquery.com/jquery-1.7.1.min.js"></script>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="{{url_for('static', filename='assets/css/main.css')}}" />
+		<noscript><link rel="stylesheet" href="{{url_for('static', filename='assets/css/noscript.css')}}" /></noscript>
+		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.css">
+		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.js"></script>
+	</head>
+
+	<body>
+		<meta id="tourneyData" data="{{json_tourneys}}">
+		<!-- Header -->
+		<header id="header">
+			<a href="/" class="title">MeleeHub</a>
+			<nav class="top-bar fixed">
+				<ul>
+					<li><a href="/" class="active">Home</a></li>
+					<li><a href="/replays">Search Replays</a></li>
+				</ul>
+			</nav>
+		</header>
+
+		
+		  <!-- Button trigger modal -->
+		  <input id="uploadTableBtn" type="hidden" onclick="document.getElementById('uploadTable').show()"></input>
+
+		<!-- Sidebar -->
+			<section id="sidebar">
+				<div class="inner">
+					<nav>
+						<ul>
+							{% if email %}
+								<li><a href="#intro">Welcome {{ email }}</a></li>
+							{% else %}
+								<li><a href="#intro">Welcome</a></li>
+							{% endif %}
+							<li><a href="#about">What is MeleeHub?</a></li>
+							<li><a href="#features">Features</a></li>
+							<li><a href="#upload">Upload</a></li>
+							<li><a href="#replays">Replays</a></li>
+							{% if email %}
+								<li><a href="#account">Sign Out</a></li>
+							{% else %}
+								<li><a href="#account">Sign in</a></li>
+							{% endif %}
+							<li><a href="#contact">Contact</a></li>
+						</ul>
+					</nav>
+				</div>
+			</section>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Intro -->
+					<section id="intro" class="wrapper style1 fullscreen fade-up">
+						<div class="inner">
+							{% for mess in get_flashed_messages()  %}
+								<div class="alert alert-warning alert-dismissible fade show" id="flashDiv" role="alert" style="z-index: 999999; background-color: white; color: black; text-align: center;">
+								<button type="button" class="close" data-dismiss="alert" aria-label="Close" class="fade close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+								{{mess}}
+								</div>
+							</br>
+							</br>
+							{% endfor %}
+							<h1>MeleeHub</h1>
+							<p>Welcome to MeleeHub - the home for <a href="https://slippi.gg/">SSBM Slippi</a> Replays.<br/></p>
+							<ul class="actions">
+								<li><a href="#about" class="button scrolly">Learn more</a></li>
+								<li><a href="/replays" class="button scrolly">Search replays</a></li>
+								<li><a href="#upload" class="button scrolly">Upload replays</a></li>
+							</ul>
+						</div>
+					</section>
+
+					<section id="about" class="wrapper style2 fullscreen fade-up">
+						<div class="inner">
+							<h1>What is MeleeHub?</h1>
+							<div class="article">
+								<p>MeleeHub is the place to share replays with the world. All you have to do is upload your .slp files (replays), and after that they'll be available for viewing and downloading. 
+								</br>Getting started is free and easy - if you decide you want other features, such as automatic video creation for uploads, or more weekly uploads/downloads, please <a href='https://patreon.com/meleehub'>visit the Patreon!</a></p>
+								<br/>
+								<p>MeleeHub is free to start and use, however greater usage requires a Patreon subscription. All users can download/upload 10 matches per week. 
+									Because there is a cost associated with running a file server, higher volume uploads and downloads and video creation/downloads are limited to Patrons.<br/></p>
+							</div>
+						</div>
+					</section>
+
+				<!-- Two -->
+					<section id="features" class="wrapper style3-alt fade-up">
+						<div class="inner">
+							<div class="features">
+								<section>
+									<a href="#upload"><span class="icon solid major fa-table"></span></a>
+									<a href="#upload"><h3>Share your replays</h3></a>
+									<p>Sharing replays is fast and easy - just visit the <a href="/upload">upload section</a> to get started. You can even have a video of the replay created automatically!</p>
+								</section>
+								<section>
+									<a href="/replays"><span class="icon solid major fa-search"></span></a>
+									<a href="/replays"><h3>View other matches</h3></a>
+									<p>Search through all the replays stored here, where you can sort and filter on a multitude of data, including characters, connect codes, stages, and more. You can search <a href="/replays">here.</a> 
+										You can also create and browse clips of matches right here thanks to <a href="https://www.youtube.com/watch?v=S9t7EDHScHU">SSBM Gifs!</a></p>
+								</section>
+								<section>
+									<a href="/replays"><span class="icon solid major fa-download"></span></a>
+									<a href="/replays"><h3>Download your favorite matches</h3></a>
+									<p>When you search for replays, you can also download the matches you want to view. You can download the replay files, the videos of the matches if you're a patron, or both!</p>
+								</section>
+								<section>
+									<a href='https://patreon.com/meleehub'><span class="icon solid major fa-hand-holding-usd"></span></a>
+									<a href='https://patreon.com/meleehub'><h3>Support on Patreon</h3></a>
+									<p>Support on Patreon is greatly appreciated - patrons also get access to more uploads/downloads daily, as well as the ability to download videos, and automatically create videos for uploads. 
+									<a href='https://patreon.com/meleehub'>Please visit the Patreon page to support and get these great features!</a></p>
+								</section>
+								<section>
+									<a href="#contact"><span class="icon solid major fa-question-circle"></span></a>
+									<a href="#contact"><h3>Support/TO Activation</h3></a>
+									<p>If you're a TO and want to upload replays for a tournament, need some support, or want to give some feedback, <a href="#contact">there is a contact form at the bottom of the page via email or discord.</a></p>
+								</section>
+								<section>
+									<a href="https://www.youtube.com/watch?v=S9t7EDHScHU"><span class="icon solid major fa-gamepad"></span></a>
+									<a href="https://www.youtube.com/watch?v=S9t7EDHScHU"><h3>SSBM Gifs</h3></a>
+									<p>Looking for an easier way to make highlights out of replay files? Check out <a href="https://www.youtube.com/watch?v=S9t7EDHScHU">SSBM Gifs</a> - completely free except for select computationally-expensive features,
+										and super easy to use! You can use the <a href="/replays">replays</a> page to create clips manually right here on MeleeHub too!</p>
+								</section>
+							</div>
+						</div>
+					</section>
+
+					<section id="upload" class="wrapper style2 fullscreen fade-up">
+						<div class="inner">
+							<h1>Upload</h1>
+							<div class="section">
+								<p>Upload .slp files here. If you are a TO, you will be able to specify Tournament and Sub-Tournament from the dropdowns to categorize the replays. 
+									Uploads are limited to 500 at a time, maximum of 2GB of data. Videos can be created automatically if you are a Patron (could possibly take several days after upload), or an already-uploaded youtube video can be linked
+								and included. Additionally, you can specify notes which are publicly tied to the replay (i.e. specifying grand finals, winner's finals, etc)</p>
+									
+								
+								<br/>
+								
+								<form id="uploadFileForm">
+									<input type="hidden" id="tourneyInput" value="None">
+									<input type="hidden" id="subTourneyInput" value="None">
+									{% if email %}
+										<div class="row gtr-uniform">
+											<div class="col-4 col-12-xsmall">
+												<nav id="nav">
+													<ul>
+														<li style="width: 100%;">
+															<a class="button"><b>Tournament Selector</b></a>
+															<ul>
+																<li><a id="noTourney" onclick="changeTourneyDropdown(this)">No Tournament</a></li>
+																{% for t, st_list in tournaments.items() %}
+																	<li>
+																		<a id="{{t}}">{{ t }}</a>
+																		<ul>
+																			<li><a id="noSubTourney" onclick="changeTourneyDropdown(this)">No Sub-Tournament</a></li>
+																			{% for st in st_list %}
+																				<li><a id="{{st}}"onclick="changeTourneyDropdown(this)">{{ st }}</a></li>
+																			{% endfor %}
+																		</ul>
+																	</li>
+																{% endfor %}
+															</ul>
+															<br/>
+														</li>
+													</ul>
+												</nav>
+											</div>
+											
+
+											<div class="col-4 col-12-xsmall">
+												<input type="text" name="currentTourney" id="currentTourney" style="text-align: center;" readonly value="Tournament: None">
+											</div>
+											<div class="col-4 col-12-xsmall">
+												<input type="text" name="currentSubTourney" id="currentSubTourney" style="text-align: center;" readonly value="Sub-Tournament: None">
+											</div>
+										</div>
+
+										<div class="row gtr-uniform">
+											<div class="col-6 col-12-xsmall">
+												<a class="button" style="width: 100%;" onclick="createNewSubTourney()">Add new sub-tournament</a>
+											</div>
+											<div class="col-6 col-12-xsmall">
+												<input type="text" name="newSubTourney" id="newSubTourney" style="text-align: center;" placeholder="New sub-tournament name">
+											</div>
+										</div>
+									{% else %}
+										
+									{% endif %}
+									<br/>
+									<div class="col-12">
+										{% if email %}
+											{% if userTier > 0 %}
+												<input type="checkbox" id="createVideoFileCheckboxes">
+												<label style="width: 50%"  for="createVideoFileCheckboxes" onclick="createVideosAll()">Create videos for each upload</label>
+											{% else %}
+												<input type="checkbox" id="createVideoFileCheckboxes" disabled>
+												<label style="width: 50%"  for="createVideoFileCheckboxes" onclick="createVideosAll()">Create videos for each upload - only for Patrons</label>
+											{% endif %}
+
+											<input type="checkbox" id="editUploadsBeforeUpload">
+											<label for="editUploadsBeforeUpload"onclick="changeUploadText()">Add notes/link videos to uploads</label>
+										{% else %}
+											<input type="checkbox" id="createVideoFileCheckboxes" style="display: none;" disabled>
+											<label style="width: 50%; display: none;" for="createVideoFileCheckboxes" onclick="createVideosAll()">Create videos for each upload</label>
+											<input type="checkbox" id="editUploadsBeforeUpload" style="display: none;" disabled>
+											<label for="editUploadsBeforeUpload" onclick="changeUploadText()" style="display: none;">Add notes and link videos to uploads</label>
+										{% endif %}
+
+										<br/>
+										{% if email %}
+											<label for="newSubTWarning" id="newSubTWarning"></label>
+										{% else %}
+											<label for="newSubTWarning" id="newSubTWarning" style="color: rgb(238, 238, 155); text-align: center;">If you'd like to specify additional information for uploads, please log in.</label>
+										{% endif %}
+
+										<hr style="border: none; border-bottom: 5px solid #6A6CC0;">
+										<input type="file" name="theFile" id="theFile" accept=".slp" style="display: none;" multiple/>
+										<a class="button" name="fileUploadSelect" id="fileUploadSelect" style="width: 100%; background-color: rgba(238, 223, 222, 0.5);" onclick="document.getElementById('theFile').click()">Select Files To Upload</a>
+										<label id="fileInfo" style="text-align: center;"></label>
+										
+										<div id="tableContainer" style="display: none; overflow: scroll; max-height: 400px; background-color: rgba(94,66,166, 1);">
+											<table class="display" id="uploadTable">
+												<thead>
+													<th scope="col">File</th>
+													<th scope="col">Create video</th>
+													<th scope="col">Video Link</th>
+													<th scope="col">Replay Notes</th>
+												</thead>
+												<tbody id="uploadTableBody"></tbody>
+											</table>
+										</div>	
+										<br/>
+
+										<a class="button" id="uploadSubmit" type="submit" style="width: 100%; background-color: rgba(0,255,0,0.3);" onclick="preUploadFiles()"><b id="uploadBtnTxt">Upload</b></a>
+
+										<progress id="fileUploadProgress" style="width: 100%;" value="0" max="100"></progress>
+										<label id="progressValue" style="text-align: center;"></label>
+										<br/><br/>
+										<a class="button" id="searchReplays" type="submit" style="width: 100%; background-color: rgba(23, 162, 184, 0.5);" href="/replays"><b>Search Replays</b></a>
+									</div>
+								</form>
+								
+							</div> 
+						</div>
+
+					</section>
+					
+					<section id="replays" class="wrapper style2 fullscreen fade-up">
+						<div class="inner">
+							<h1>Search Replays</h1>
+							<div class="article">
+								<p>Below is a link to look through replays currently on MeleeHub. In that page, you can sort and filter replays, download replays, and create highlight clips!</br>
+									Additionally, you can search through clips other users have made through MeleeHub, and see which replay file the clip is made from, as well as the start/end time.</br>
+									Please note: all uploads/highlight creations take a minute or two to process, so if you don't see your replay immediately, try again after a few minutes.
+								</p>
+								<a class="button" id="searchReplays" type="submit" style="width: 100%; background-color: rgba(23, 162, 184, 0.5);" href="/replays"><b>Search Replays</b></a>
+							</div>
+						</div>
+					</section>
+
+					<!-- Signin/Signup/Register -->
+					{% if email %}
+						<section id="account" class="wrapper style2-alt fullscreen fade-up">
+							<div class="inner">
+								<h2>Sign Out</h2>
+								<p>Welcome back {{ email }}!</p>
+								<p><b>To support the website and get more daily uploads/downloads, <a href='https://www.patreon.com/meleehub'>visit the Patreon page</a></b></p>
+								<div class="style1">
+									<section>
+										<form method="post" action="/signout">
+											<div class="fields">
+												<div class="field half">
+													<label for="name">Email</label>
+													<input type="text" name="email" id="email" value = "{{ email }}" readonly/>
+												</div>
+												<div class="field half">
+													<label for="discordUsername">Discord Username</label>
+													<input type="text" name="discordUsername" id="discordUsername" value = "{{ discordUsername }}" readonly/>
+												</div>
+												</br><br/>
+												<div class="field">
+													<label for="loginWarning" id="loginWarning"></label>
+												</div>
+											</div>
+											<ul class="actions">
+												<li><input type="submit" value="Sign Out"></input></li>
+												<li><a class="button" onclick="resetPassword()">Reset Password</a></li>
+												<li><a class="button" onclick="changeDiscord()">Change Discord</a></li>
+											</ul>
+											<ul class="actions">
+												<li><a class="button" href="#upload">Upload</a></li>
+												<li><a class="button" href="/replays">Search Replays</a></li>
+											</ul>
+										</form>
+									</section>
+								</div>
+							</div>
+						</section>
+					{% else %}
+						<section id="account" class="wrapper style2-alt fade-up">
+							<div class="inner">
+								<h2>Sign In / Register</h2>
+								<p>Creating an account is easy, and is required if you want to upload/download more, or to autocreate videos/download videos. Just fill out the fields below and hit "Register" to make a new account.
+								You can also link your discord account (which can be changed later) to create clips from replay files!</p>
+								<p><b>To support the website and get more daily uploads/downloads and other features, <a href='patreon.com/meleehub'>visit the Patreon page</a></b></p>
+								<div class="style1">
+									<section>
+										<form method="post" action="/signin">
+											<div class="fields">
+												<div class="field half">
+													<label for="name">Email</label>
+													<input type="text" name="email" id="email" />
+												</div>
+												</br>
+												<div class="field half">
+													<label for="password">Password</label>
+													<input type="password" name="password" id="password" />
+													
+												</div>
+												<br/>
+												<div class="field">
+													<label for="loginWarning" id="loginWarning"></label>
+												</div>
+											</div>
+											<ul class="actions">
+												<li><a class="button" onclick="signin()">Sign in</a></li>
+												<li><a class="button" onclick="register()">Register</a></li>
+												<li><a class="button" onclick="resetPassword()">Reset Password</a></li>
+											</ul>
+											<ul>
+												<input type="checkbox" id="discordRegister"><label for="discordRegister">Link my discord when I register</label><i class="fas fa-question-circle" title="This will add a discord login to use for creating highlights. The only information needed is your discord ID."></i>
+											</ul>
+										</form>
+										<br />
+									</section>
+								</div>
+							</div>
+						</section>
+					{% endif %}
+
+				<!-- Three -->
+					<section id="contact" class="wrapper style1 fade-up">
+						<div class="inner">
+							<h2>Contact me</h2>
+							<p>If you need support of any kind, or want to get authenticated as a TO, or just want to provide some feedback, reach out via email or discord.</p>
+							<div class="style1">
+								<section>
+									<form method="post" action="/sendEmail">
+										<div class="fields">
+											<!--<div class="field half">
+												<label for="name">Name</label>
+												<input type="text" name="name" id="name" />
+											</div> -->
+											{% if discordUsername != 0 %}
+												<div class="field half">
+													<label for="Discord username">Discord Username</label>
+													<input type="text" name="discordInfo" id="discordInfo" value="{{discordUsername}}" readonly/>
+												</div>
+											{% else %}
+												<div class="field half">
+													<label for="Discord username">Discord Username & Discriminator (ex: Joe Schmoe#1234)</label>
+													<input type="text" name="discordInfo" id="discordInfo" />
+												</div>
+											{% endif %}
+											<br/>
+											<div class="field">
+												<label for="message">Message</label>
+												<textarea name="message" id="message" rows="5" maxlength="1000"></textarea>
+											</div>
+										</div>
+										<ul class="actions">
+											<li><input type="submit" value="Send Email"></input></li>
+											<li><a class="button" onclick="sendMessage('{{discordUsername}}')">Send Discord Message</a></li>
+										</ul>
+										<label id="discordWarning"></label>
+									</form>
+									<br />
+									
+									<label for="discord">Or message me directly on Discord @matt is a bumb#4391</label>
+								</section>
+							</div>
+						</div>
+					</section>
+
+			</div>
+
+		<!-- Footer -->
+			<footer id="footer" class="wrapper style1-alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>Design: <a href="http://html5up.net">HTML5 UP</a>
+				</div>
+			</footer>
+
+		<!-- Scripts -->
+			<script src="{{url_for('static', filename='assets/js/jquery.scrollex.min.js')}}"></script>
+			<script src="{{url_for('static', filename='assets/js/jquery.scrolly.min.js')}}"></script>
+			<script src="{{url_for('static', filename='assets/js/jquery.dropotron.min.js')}}"></script>
+			<script src="{{url_for('static', filename='assets/js/browser.min.js')}}"></script>
+			<script src="{{url_for('static', filename='assets/js/breakpoints.min.js')}}"></script>
+			<script src="{{url_for('static', filename='assets/js/util.js')}}"></script>
+			<script src="{{url_for('static', filename='assets/js/main.js')}}"></script>
+			<script src="{{url_for('static', filename='assets/js/upload.js')}}"></script>
+
+	</body>
+</html>
+
+<script>
+	//Sends a discord message to my private channel. I should probably change this to the server side so the hook isn't exposed but I'm just gonna go ahead and trust people not to abuse this.
+    function sendMessage() {
+		const message = document.getElementById("message").value;
+		const discordInfo = document.getElementById("discordInfo").value;
+		const toSend = "<@173537286791757824>\n\n" + message + "\nUser: " + discordInfo;
+		var errorText = document.getElementById("discordWarning")
+
+		if (discordInfo == '') {
+			errorText.style.color = 'rgba(244, 113, 116, 1.0)';
+			errorText.innerHTML = 'Please enter your Discord username and discriminator (ex: john doe#1234) or your Discord ID'
+			return
+		}
+
+		data = {'message': toSend}
+		$.ajax({
+			//Sign in
+			type: "POST",
+			url: "/discordSupport",
+			data: data,
+
+			success: function(data) {
+				if (data.result == 204) {
+					errorText.innerHTML = 'Successfuly sent discord message. I will respond as soon as I read it'
+					errorText.style.color = 'rgba(172, 209, 175, 1.0)';
+				} else {
+					errorText.innerHTML = 'Error sending discord support message. Support has been notified of this error.'
+					errorText.style.color = 'rgba(244, 113, 116, 1.0)';
+				}
+			}
+		});
+		
+    }
+
+	//Send sign in request for user
+	function signin() {
+		const email = document.getElementById("email").value;
+		const password = document.getElementById("password").value;
+		
+		var errorText = document.getElementById("loginWarning")
+
+		data = {'email': email, 'password': password}
+		$.ajax({
+			//Sign in
+			type: "POST",
+			url: "/signin",
+			data: data,
+			success: function(data) {
+				if (data.result != 1) {
+					// alert("Failed to generate the upload URL, please contact support")
+					errorText.style.color = 'rgba(244, 113, 116, 1.0)';
+					errorText.innerHTML = data.message
+				} else {
+					location.reload();
+				}
+			}
+		});
+	}
+
+	//Register new user
+	function register() {
+		const email = document.getElementById("email").value;
+		const password = document.getElementById("password").value;
+		const discordVal = document.getElementById("discordRegister").checked
+		var errorText = document.getElementById("loginWarning")
+
+		data = {'email': email, 'password': password, 'discord': discordVal}
+		$.ajax({
+			//Register
+			type: "POST",
+			url: "/signup",
+			data: data,
+			success: function(data) {
+				if (data.result < 1) {
+					// alert("Failed to generate the upload URL, please contact support")
+					errorText.style.color = 'rgba(244, 113, 116, 1.0)';
+					errorText.innerHTML = data.message
+				} else if (data.result == 1) {
+					location.reload();
+				} else if (data.result == 2) {
+					window.location.href = data.url
+				}
+			}
+		});
+	}
+
+	//Reset password for user
+	function resetPassword() {
+		const email = document.getElementById("email").value;
+		var errorText = document.getElementById("loginWarning")
+		data = {'email': email}
+		$.ajax({
+			//Reset password
+			type: "POST",
+			url: "/resetPassword",
+			data: data,
+			success: function(data) {
+				if (data.result != 1) {
+					// alert("Failed to generate the upload URL, please contact support")
+					errorText.style.color = 'rgba(244, 113, 116, 1.0)';
+					errorText.innerHTML = data.message
+				} else {
+					//window.location.href = data.resetURL
+					errorText.style.color = 'rgba(172, 209, 175, 1.0)';
+					errorText.innerHTML = data.message
+				}
+			}
+		});
+	}
+
+	function changeDiscord() {
+		$.ajax({
+			type: "POST",
+			url: "/discordAuth",
+			success: function(data) {
+				window.location.href = data.url
+			}
+		});
+	}
+  </script>
